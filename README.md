@@ -31,7 +31,7 @@ Click the green **Code** button on this page → **Download ZIP**, then unzip it
 
 Or if you have Git:
 ```
-git clone https://github.com/YOUR_USERNAME/noreelsgram.git
+git clone https://github.com/cprite/noreelsgram.git
 ```
 
 ---
