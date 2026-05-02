@@ -15,97 +15,127 @@ Instagram without Reels. A simple iOS app that opens Instagram's website with Re
 
 ---
 
-## Requirements
+## What you need
 
-- A **Mac** with **Xcode** installed (free on the App Store)
-- An **iPhone** with a USB cable
-- A **free Apple ID** (the one you use for the App Store)
+- A **Mac** with at least **20 GB of free space** (Xcode + iOS tools take ~18 GB)
+- An **iPhone** + a **USB cable**
+- A **free Apple ID** (the one you already use for the App Store)
+- **Xcode** — free, download from the Mac App Store
 
 ---
 
-## Step-by-step setup
+## Installation guide
 
 ### Step 1 — Download the code
 
-Click the green **Code** button on this page → **Download ZIP**, then unzip it.
+Click the green **Code** button at the top of this page → **Download ZIP**.
 
-Or if you have Git:
-```
-git clone https://github.com/cprite/say-no-to-reels.git
-```
+Once downloaded, double-click the ZIP to unzip it. You'll get a folder called `say-no-to-reels-main`.
 
 ---
 
 ### Step 2 — Install Xcode
 
-Open the **App Store** on your Mac, search for **Xcode**, and install it. It's free but large (~10 GB), so give it some time.
+Open the **App Store** on your Mac, search for **Xcode**, and install it.
+
+> It's about 10 GB — start the download and come back in a bit.
 
 ---
 
-### Step 3 — Open the project
+### Step 3 — Create a new Xcode project
 
-Inside the downloaded folder, open:
-```
-SayNoToReels/SayNoToReels.xcodeproj
-```
-Double-click it — it will open in Xcode.
+1. Open **Xcode**
+2. Click **Create New Project**
+3. Select **iOS → App** and click **Next**
+4. Fill in the fields:
+   - **Product Name**: `SayNoToReels`
+   - **Interface**: `SwiftUI`
+   - **Language**: `Swift`
+5. Click **Next**, choose where to save it (e.g. your Desktop), and click **Create**
 
 ---
 
-### Step 4 — Sign in with your Apple ID
+### Step 4 — Add the app files
+
+1. In the left sidebar of Xcode, **right-click** the yellow `SayNoToReels` folder
+2. Select **"Add Files to 'SayNoToReels'..."**
+3. Navigate to the `say-no-to-reels-main` folder you downloaded
+4. Select all these files:
+   - `ContentView.swift`
+   - `SayNoToReelsApp.swift`
+   - `WebViewModel.swift`
+   - `WebViewRepresentable.swift`
+   - `InstagramBlocker.js`
+5. Make sure **"Copy items if needed"** is checked
+6. Click **Add**
+
+> If Xcode asks about replacing existing files, click **Replace**.
+
+---
+
+### Step 4b — Add the app icon (optional)
+
+1. In the left sidebar, click **Assets.xcassets**
+2. Click **AppIcon** in the middle panel
+3. Drag the app icon image from the `say-no-to-reels-main` folder into the icon slots
+
+> If you don't have an icon, you can skip this — the app will use a default icon.
+
+---
+
+### Step 5 — Sign in with your Apple ID
 
 1. In the menu bar: **Xcode → Settings → Accounts**
-2. Click **+** in the bottom left → **Apple ID** → sign in with your Apple ID
+2. Click **+** in the bottom-left corner → choose **Apple ID** → sign in
 
 ---
 
-### Step 5 — Set your signing team
+### Step 6 — Set your signing team
 
-1. In the left sidebar, click **SayNoToReels** (the blue icon at the top)
+1. In the left sidebar, click **SayNoToReels** (the icon at the very top of the list)
 2. Under **TARGETS**, click **SayNoToReels**
 3. Go to the **Signing & Capabilities** tab
-4. Under **Team**, select your name (it will say "Personal Team")
+4. Under **Team**, select your name — it will say something like "Your Name (Personal Team)"
 
 ---
 
-### Step 6 — Connect your iPhone
+### Step 7 — Connect your iPhone
 
 Plug your iPhone into your Mac with a USB cable.
 
-When prompted on your iPhone, tap **Trust This Computer**.
+When a popup appears on your iPhone asking **"Trust This Computer?"**, tap **Trust**.
 
 ---
 
-### Step 7 — Enable Developer Mode on your iPhone
+### Step 8 — Enable Developer Mode on your iPhone
 
-This is required for installing apps outside the App Store.
+This is a one-time step required to install apps outside the App Store.
 
 1. On your iPhone: **Settings → Privacy & Security → Developer Mode**
 2. Toggle it **ON**
-3. Tap **Restart**, then **Turn On** after reboot
+3. Tap **Restart**, then tap **Turn On** after your phone reboots
 
 ---
 
-### Step 8 — Run the app
+### Step 9 — Run the app
 
-1. In Xcode, click the device selector at the top (it may say "iPhone" or a simulator name)
+1. In Xcode, click the device name at the top of the window (it might say "iPhone" or "My Mac")
 2. Select your iPhone from the list
 3. Press the **▶ Play button** (or `Cmd + R`)
-4. Xcode will build and install the app on your phone
 
-> First time may take a few minutes to compile.
+Xcode will build and install the app on your phone. The first time takes a couple of minutes.
 
 ---
 
-### Step 9 — Trust the developer certificate on your iPhone
+### Step 10 — Trust the app on your iPhone
 
-After the app installs, iOS will block it until you trust it:
+iOS will block the app the first time you open it. To fix this:
 
 1. **Settings → General → VPN & Device Management**
 2. Tap your Apple ID email
 3. Tap **Trust**
 
-Now open **Noreelsgram** from your home screen — done! 🎉
+Open **Noreelsgram** from your home screen — you're done! 🎉
 
 ---
 
@@ -113,73 +143,23 @@ Now open **Noreelsgram** from your home screen — done! 🎉
 
 With a free Apple ID, the app expires every **7 days**. To renew it:
 
-1. Plug your iPhone back into your Mac
+1. Plug your iPhone into your Mac
 2. Open Xcode and press **▶ Run** again
 
 That's it — takes about 30 seconds.
-
-**Want to avoid this?** Use [AltStore](https://altstore.io) — it auto-renews the app in the background for free.
-
----
-
-## How it works (technical)
-
-| Component | Role |
-|---|---|
-| `WKWebView` | Loads `instagram.com` in a full-screen web view |
-| `InstagramBlocker.js` | Injected at page load — hides Reels via CSS and DOM manipulation |
-| `WKNavigationDelegate` | Blocks navigation to `/reels/` URLs at the network level |
-| `WKWebsiteDataStore.default()` | Keeps your login session saved between app launches |
 
 ---
 
 ## Troubleshooting
 
-**"Untrusted Developer" error on iPhone**
-→ Go to Settings → General → VPN & Device Management → trust your Apple ID
+**"Untrusted Developer" error when opening the app**
+→ Go to **Settings → General → VPN & Device Management** → tap your Apple ID → tap **Trust**
 
-**Reels still showing**
-→ Pull down to refresh or tap the ↻ button in the bottom-right corner
+**Reels are still showing**
+→ Pull down to refresh, or tap the **↻ button** in the bottom-right corner of the app
 
-**Build errors in Xcode**
-→ Make sure you selected your iPhone under TARGETS (not PROJECT) when setting the Team
+**Can't see your iPhone in Xcode**
+→ Make sure you tapped **Trust This Computer** on your iPhone, and that Developer Mode is turned on
 
----
-
-## Blocked content
-
-| Content | Blocked by |
-|---|---|
-| Reels tab in bottom nav | CSS `display:none` |
-| Reel posts in home feed | CSS `:has(a[href*="/reel/"])` + MutationObserver |
-| Suggested Posts section | CSS + JS DOM walk |
-| Direct `/reels/` URL navigation | `WKNavigationDelegate` policy cancel |
-
-### Optional blocks (uncomment in `InstagramBlocker.js` / `WebViewModel.swift`)
-
-- Explore / Search tab
-- Stories strip
-
----
-
-## Updating the blocker
-
-Instagram's HTML structure changes frequently. If something breaks:
-
-1. Open `InstagramBlocker.js`.
-2. Use Safari's Web Inspector (connect iPhone → Safari → Develop menu) to
-   inspect the live DOM and find the new class names / aria-labels.
-3. Update the CSS selectors and save — no Xcode rebuild needed if you're
-   loading the file from the bundle at runtime (current setup).
-
----
-
-## Limitations
-
-- Instagram's mobile web occasionally prompts "Open in App" banners —
-  the JS blocker dismisses most of them, but you may need to tap "Not now".
-- Push notifications are **not** supported (web push on iOS requires explicit
-  user permission and a service worker; Instagram's PWA does support it but
-  you'll need to allow it in Settings).
-- This is a web wrapper, not a native client. Performance is slightly lower
-  than the official app.
+**Build failed in Xcode**
+→ Make sure all 5 files were added in Step 4, and that your signing team is set in Step 6
