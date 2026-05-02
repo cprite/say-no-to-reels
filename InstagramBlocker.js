@@ -1,7 +1,7 @@
 // ============================================================
 // InstagramBlocker.js
 // Injected into every page load via WKUserScript.
-// Hides: Reels tab, Reels feed rows, Suggested Posts.
+// Hides: Reels tab, Reels feed rows, Suggested Posts, Ads.
 // Removes: Safari browser-chrome padding Instagram injects.
 // ============================================================
 
@@ -26,6 +26,12 @@
     article:has(span:is([class*="suggested"], [class*="Suggested"])) {
       display: none !important;
     }
+
+    /* ── Sponsored / Ads ── */
+    article:has(span[aria-label="Sponsored"]),
+    article:has(a[aria-label="Sponsored"]) {
+      display: none !important;
+    }
   `;
 
   function injectCSS() {
@@ -48,6 +54,11 @@
     document.querySelectorAll('[data-testid="suggested-posts-header"]').forEach(el => {
       let node = el.closest('article') || el.parentElement;
       while (node) { node.style.display = 'none'; node = node.nextElementSibling; }
+    });
+    // Hide sponsored / ad posts
+    document.querySelectorAll('span[aria-label="Sponsored"], a[aria-label="Sponsored"]').forEach(el => {
+      const c = el.closest('article') || el.closest('li') || el.parentElement;
+      if (c) c.style.display = 'none';
     });
   }
 
@@ -76,3 +87,4 @@
   window.addEventListener('popstate', () => setTimeout(hideReels, 300));
 
 })();
+
