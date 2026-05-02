@@ -11,6 +11,7 @@ Instagram without Reels. A simple iOS app that opens Instagram's website with Re
 - ✅ Shows your Instagram feed (posts, stories, DMs)
 - ❌ Blocks Reels completely — in the feed, in the nav bar, everywhere
 - ❌ Blocks Suggested Posts
+- ❌ Blocks Sponsored posts (ads)
 - 🔒 Keeps you logged in between sessions
 
 ---
