@@ -9,28 +9,34 @@ SayNoToReels.xcodeproj/      ← open this in Xcode
 SayNoToReels/
 ├── SayNoToReelsApp.swift    ← @main entry point + the hosting UIViewController
 ├── WebViewModel.swift       ← WKWebView config + Reels navigation blocking
-├── InstagramBlocker.js      ← injected script that hides Reels/ads in the DOM
+├── InstagramBlocker.js      ← injected stylesheet that hides the Reels nav button
 ├── Info.plist
 └── Assets.xcassets/         ← app icon + accent color
 ```
 
 ## How the Reels block works
 
-Reels are blocked in two complementary layers:
+Reels are blocked in two cheap layers:
 
 1. **Navigation policy** — `WebViewModel`'s `decidePolicyFor` cancels any navigation
-   whose path starts with `/reels` or `/reel/`. This is the hard guarantee: a Reel
-   can't open even if its entry point slips past the cosmetic filter.
-2. **DOM hiding** — `InstagramBlocker.js` is injected at `documentStart` and hides
-   reel tiles, the Reels nav tab, suggested posts, and ads using CSS plus a debounced
-   `MutationObserver` that re-scans on Instagram's client-side navigations.
+   whose path starts with `/reels` or `/reel/`. This is the hard guarantee: the Reels
+   player never opens, even if a reel link is tapped.
+2. **Static CSS** — `InstagramBlocker.js` is injected at `documentStart` and adds one
+   stylesheet that hides the Reels button in the nav. It intentionally does **no** DOM
+   scanning, has **no** `MutationObserver`, and uses **no** `:has()` selectors — an
+   earlier version did, and it made the feed crawl by inspecting every post. CSS is
+   reactive, so the rule keeps applying as Instagram re-renders the nav, for free.
+
+Scope is deliberate: we remove the Reels *destination* (the nav button + the `/reels`
+player), not individual reels inside the home feed. Filtering feed items reliably means
+scanning every post, which is exactly the performance trap we're avoiding.
 
 ## When Instagram changes its markup
 
-Instagram ships frequent web changes, so Reels or ads may start leaking through. The
-fix is almost always in **`InstagramBlocker.js`** — update the CSS selectors or the
-`hideReelArticles()` logic to match the new DOM. Keep selectors as specific as
-possible to avoid hiding legitimate posts.
+Instagram ships frequent web changes, so the Reels button may reappear. The fix is
+almost always a one-line selector update in **`InstagramBlocker.js`** to match the new
+nav markup. Keep selectors specific so you don't accidentally hide legitimate content,
+and keep the script free of per-post scanning — performance is a feature here.
 
 ## Submitting changes
 

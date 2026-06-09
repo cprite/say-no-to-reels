@@ -1,56 +1,27 @@
 // ============================================================
 // InstagramBlocker.js
-// Injected into every page load via WKUserScript.
-// Blocks Reels via CSS + lightweight MutationObserver.
+// Injected at document start. Hides the Reels button from
+// Instagram's navigation with a single static stylesheet.
+//
+// Deliberately lightweight: no DOM scanning, no MutationObserver,
+// no :has() selectors — so the feed scrolls at full speed. CSS is
+// reactive, so the rule keeps applying as Instagram re-renders the
+// nav during client-side navigation, with zero ongoing JS cost.
+//
+// Opening a Reel by URL is blocked separately (and for free) by the
+// navigation policy in WebViewModel.swift.
 // ============================================================
 
 (function () {
   'use strict';
 
-  // ── CSS: hides reels nav tab and any already-rendered reel articles ──
-  if (!document.getElementById('sntr-style')) {
-    const s = document.createElement('style');
-    s.id = 'sntr-style';
-    s.textContent = `
-      a[href="/reels/"],
-      a[href*="/reels"],
-      [aria-label="Reels"],
-      svg[aria-label="Reels"] { display: none !important; }
+  if (document.getElementById('sntr-style')) return;
 
-      article:has(svg[aria-label="Reel"]),
-      article:has(a[href*="/reel/"]),
-      div:has(> a[href*="/reel/"]) { display: none !important; }
-    `;
-    (document.head || document.documentElement).appendChild(s);
-  }
-
-  // ── JS: catches reel articles that slip past CSS during dynamic loads ──
-  function hideReelArticles() {
-    document.querySelectorAll('article:not([data-sntr])').forEach(article => {
-      article.setAttribute('data-sntr', '1');
-      if (article.querySelector('a[href*="/reel/"], svg[aria-label="Reel"]')) {
-        article.style.display = 'none';
-      }
-    });
-  }
-
-  hideReelArticles();
-
-  // Debounced observer — only fires once per animation frame
-  let rafPending = false;
-  new MutationObserver(() => {
-    if (!rafPending) {
-      rafPending = true;
-      requestAnimationFrame(() => {
-        hideReelArticles();
-        rafPending = false;
-      });
-    }
-  }).observe(document.documentElement, { childList: true, subtree: true });
-
-  // Re-scan on client-side navigation
-  const _push = history.pushState.bind(history);
-  history.pushState = function (...a) { _push(...a); setTimeout(hideReelArticles, 300); };
-  window.addEventListener('popstate', () => setTimeout(hideReelArticles, 300));
-
+  const style = document.createElement('style');
+  style.id = 'sntr-style';
+  style.textContent = `
+    a[href="/reels/"],
+    [aria-label="Reels"] { display: none !important; }
+  `;
+  (document.head || document.documentElement).appendChild(style);
 })();

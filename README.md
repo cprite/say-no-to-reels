@@ -9,21 +9,23 @@ Instagram without Reels. A simple iOS app that opens Instagram's website with Re
 ## What it does
 
 - ✅ Shows your Instagram feed (posts, stories, DMs)
-- ❌ Blocks Reels completely — in the feed, in the nav bar, everywhere
-- ❌ Blocks Suggested Posts
-- ❌ Blocks Sponsored posts (ads)
+- ❌ Removes the Reels tab from the navigation bar
+- ❌ Blocks opening Reels — tapping a reel link won't take you into the player
+- ⚡ Stays fast — no per-post scanning, so the feed scrolls at full speed
 - 🔒 Keeps you logged in between sessions
+
+> Scope note: this removes the Reels *destination* — the nav button and the `/reels` player. It doesn't scrub individual reels out of the home feed; doing that reliably means scanning every post, which made the feed crawl. Removing the entrance is the cheap, fast win.
 
 ---
 
 ## How it works
 
-It's a thin native shell around Instagram's mobile website (`WKWebView`). Reels are blocked in two layers:
+It's a thin native shell around Instagram's mobile website (`WKWebView`). Reels are blocked in two cheap layers:
 
-1. **Navigation policy** (`WebViewModel.swift`) — hard-cancels any navigation to `/reels` or `/reel/...`, so a Reel can't open even if you tap one.
-2. **DOM hiding** (`InstagramBlocker.js`) — injected at page load to hide reel tiles, the Reels nav tab, suggested posts, and ads from the feed.
+1. **Navigation policy** (`WebViewModel.swift`) — hard-cancels any navigation to `/reels` or `/reel/...`, so the Reels player never opens even if you tap a reel link.
+2. **Static CSS** (`InstagramBlocker.js`) — a single injected stylesheet that hides the Reels button in the nav. No DOM scanning, no observers — the feed stays fast.
 
-> Instagram changes its markup often. If Reels start leaking through, the CSS selectors in `InstagramBlocker.js` are the place to update — PRs welcome.
+> Instagram changes its markup often. If the Reels button reappears, the CSS selector in `InstagramBlocker.js` is the place to update — PRs welcome.
 
 ---
 
@@ -136,8 +138,8 @@ That's it — takes about 30 seconds.
 **"Untrusted Developer" error when opening the app**
 → Go to **Settings → General → VPN & Device Management** → tap your Apple ID → tap **Trust**
 
-**Reels are still showing**
-→ Pull down to refresh, or tap the **↻ button** in the bottom-right corner of the app
+**The Reels tab is still showing in the nav**
+→ Pull down to refresh, or tap the **↻ button** in the bottom-right corner. If it persists, Instagram likely changed its markup — update the CSS selector in `InstagramBlocker.js` (see [CONTRIBUTING.md](CONTRIBUTING.md)).
 
 **Can't see your iPhone in Xcode**
 → Make sure you tapped **Trust This Computer** on your iPhone, and that Developer Mode is turned on
