@@ -44,6 +44,8 @@ Click the green **Code** button at the top of this page → **Download ZIP**.
 
 Once downloaded, double-click the ZIP to unzip it. You'll get a folder called `say-no-to-reels-main`.
 
+> Prefer git? `git clone https://github.com/cprite/say-no-to-reels.git`
+
 ---
 
 ### Step 2 — Install Xcode
@@ -54,62 +56,31 @@ Open the **App Store** on your Mac, search for **Xcode**, and install it.
 
 ---
 
-### Step 3 — Create a new Xcode project
+### Step 3 — Open the project
 
-1. Open **Xcode**
-2. Click **Create New Project**
-3. Select **iOS → App** and click **Next**
-4. Fill in the fields:
-   - **Product Name**: `SayNoToReels`
-   - **Interface**: `SwiftUI`
-   - **Language**: `Swift`
-5. Click **Next**, choose where to save it (e.g. your Desktop), and click **Create**
+Inside the folder, double-click **`SayNoToReels.xcodeproj`**. Xcode opens with everything already set up — no need to create a project or add files by hand.
 
 ---
 
-### Step 4 — Add the app files
-
-1. In the left sidebar of Xcode, **right-click** the yellow `SayNoToReels` folder
-2. Select **"Add Files to 'SayNoToReels'..."**
-3. Navigate to the `say-no-to-reels-main` folder you downloaded
-4. Select all these files:
-   - `SayNoToReelsApp.swift`
-   - `WebViewModel.swift`
-   - `InstagramBlocker.js`
-5. Make sure **"Copy items if needed"** is checked
-6. Click **Add**
-
-> If Xcode asks about replacing existing files, click **Replace**.
-
----
-
-### Step 4b — Add the app icon (optional)
-
-1. In the left sidebar, click **Assets.xcassets**
-2. Click **AppIcon** in the middle panel
-3. Drag the app icon image from the `say-no-to-reels-main` folder into the icon slots
-
-> If you don't have an icon, you can skip this — the app will use a default icon.
-
----
-
-### Step 5 — Sign in with your Apple ID
+### Step 4 — Sign in with your Apple ID
 
 1. In the menu bar: **Xcode → Settings → Accounts**
 2. Click **+** in the bottom-left corner → choose **Apple ID** → sign in
 
 ---
 
-### Step 6 — Set your signing team
+### Step 5 — Set your signing team
 
-1. In the left sidebar, click **SayNoToReels** (the icon at the very top of the list)
+1. In the left sidebar, click the blue **SayNoToReels** project icon at the very top
 2. Under **TARGETS**, click **SayNoToReels**
 3. Go to the **Signing & Capabilities** tab
 4. Under **Team**, select your name — it will say something like "Your Name (Personal Team)"
 
+> **If signing fails with "bundle identifier is not available":** change the **Bundle Identifier** field (just above Team) to something unique, e.g. `com.yourname.SayNoToReels`.
+
 ---
 
-### Step 7 — Connect your iPhone
+### Step 6 — Connect your iPhone
 
 Plug your iPhone into your Mac with a USB cable.
 
@@ -117,7 +88,7 @@ When a popup appears on your iPhone asking **"Trust This Computer?"**, tap **Tru
 
 ---
 
-### Step 8 — Enable Developer Mode on your iPhone
+### Step 7 — Enable Developer Mode on your iPhone
 
 This is a one-time step required to install apps outside the App Store.
 
@@ -127,7 +98,7 @@ This is a one-time step required to install apps outside the App Store.
 
 ---
 
-### Step 9 — Run the app
+### Step 8 — Run the app
 
 1. In Xcode, click the device name at the top of the window (it might say "iPhone" or "My Mac")
 2. Select your iPhone from the list
@@ -137,7 +108,7 @@ Xcode will build and install the app on your phone. The first time takes a coupl
 
 ---
 
-### Step 10 — Trust the app on your iPhone
+### Step 9 — Trust the app on your iPhone
 
 iOS will block the app the first time you open it. To fix this:
 
@@ -172,7 +143,13 @@ That's it — takes about 30 seconds.
 → Make sure you tapped **Trust This Computer** on your iPhone, and that Developer Mode is turned on
 
 **Build failed in Xcode**
-→ Make sure all 3 files were added in Step 4, and that your signing team is set in Step 6
+→ Make sure your signing team is set (Step 5). If you see "bundle identifier is not available," change the Bundle Identifier to something unique like `com.yourname.SayNoToReels`.
+
+---
+
+## Contributing
+
+Instagram changes its website often, so the Reels/ad filters need occasional updates — that's the most useful place to help. See [CONTRIBUTING.md](CONTRIBUTING.md) for the project layout and how the blocking works.
 
 ---
 
