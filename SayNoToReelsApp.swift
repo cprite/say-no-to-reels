@@ -1,6 +1,5 @@
 import SwiftUI
 import UIKit
-import WebKit
 
 @main
 struct SayNoToReelsApp: App {
@@ -21,9 +20,9 @@ struct RootView: UIViewControllerRepresentable {
     func updateUIViewController(_ vc: WebViewController, context: Context) {}
 }
 
-/// Full-screen UIViewController — creates WKWebView after the window is ready.
+/// Full-screen UIViewController hosting the Instagram web view.
 final class WebViewController: UIViewController {
-    private var webView: WKWebView?
+    private let model = WebViewModel()
     private var hasLoaded = false
 
     override func viewDidLoad() {
@@ -31,44 +30,41 @@ final class WebViewController: UIViewController {
         view.backgroundColor = .black
         edgesForExtendedLayout = .all
         extendedLayoutIncludesOpaqueBars = true
+
+        let wv = model.webView
+        wv.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(wv)
+
+        // Floating refresh button
+        let refreshBtn = UIButton(type: .system)
+        refreshBtn.setImage(UIImage(systemName: "arrow.clockwise"), for: .normal)
+        refreshBtn.tintColor = .white
+        refreshBtn.backgroundColor = UIColor(white: 0.2, alpha: 0.8)
+        refreshBtn.layer.cornerRadius = 20
+        refreshBtn.translatesAutoresizingMaskIntoConstraints = false
+        refreshBtn.addAction(UIAction { [weak model] _ in model?.reload() }, for: .touchUpInside)
+        view.addSubview(refreshBtn)
+
+        NSLayoutConstraint.activate([
+            wv.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+            wv.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+            wv.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            wv.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+
+            refreshBtn.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
+            refreshBtn.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -16),
+            refreshBtn.widthAnchor.constraint(equalToConstant: 40),
+            refreshBtn.heightAnchor.constraint(equalToConstant: 40),
+        ])
     }
 
-    override func viewDidLayoutSubviews() {
-        super.viewDidLayoutSubviews()
-
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
         if !hasLoaded {
             hasLoaded = true
-
-            let wv = WebViewModel.makeWebView(frame: view.bounds)
-            wv.translatesAutoresizingMaskIntoConstraints = false
-            view.addSubview(wv)
-
-            // Refresh button
-            let refreshBtn = UIButton(type: .system)
-            refreshBtn.setImage(UIImage(systemName: "arrow.clockwise"), for: .normal)
-            refreshBtn.tintColor = .white
-            refreshBtn.backgroundColor = UIColor(white: 0.2, alpha: 0.8)
-            refreshBtn.layer.cornerRadius = 20
-            refreshBtn.translatesAutoresizingMaskIntoConstraints = false
-            refreshBtn.addAction(UIAction { _ in wv.reload() }, for: .touchUpInside)
-            view.addSubview(refreshBtn)
-
-            NSLayoutConstraint.activate([
-                wv.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
-                wv.bottomAnchor.constraint(equalTo: view.bottomAnchor),
-                wv.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-                wv.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-
-                refreshBtn.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
-                refreshBtn.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -16),
-                refreshBtn.widthAnchor.constraint(equalToConstant: 40),
-                refreshBtn.heightAnchor.constraint(equalToConstant: 40),
-            ])
-            self.webView = wv
-            wv.load(URLRequest(url: WebViewModel.instagramDMURL))
+            model.loadInbox()
         }
     }
 
-    override var prefersStatusBarHidden: Bool { false }
     override var preferredStatusBarStyle: UIStatusBarStyle { .lightContent }
 }

@@ -70,10 +70,6 @@
     <key>NSPhotoLibraryUsageDescription</key>
     <string>Used to share photos from your library in Direct Messages.</string>
 
-    <!-- Face ID / Touch ID for app lock (optional, remove if unused) -->
-    <key>NSFaceIDUsageDescription</key>
-    <string>Used to unlock the app.</string>
-
     <!-- Orientation support -->
     <key>UISupportedInterfaceOrientations</key>
     <array>

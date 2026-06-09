@@ -16,6 +16,17 @@ Instagram without Reels. A simple iOS app that opens Instagram's website with Re
 
 ---
 
+## How it works
+
+It's a thin native shell around Instagram's mobile website (`WKWebView`). Reels are blocked in two layers:
+
+1. **Navigation policy** (`WebViewModel.swift`) — hard-cancels any navigation to `/reels` or `/reel/...`, so a Reel can't open even if you tap one.
+2. **DOM hiding** (`InstagramBlocker.js`) — injected at page load to hide reel tiles, the Reels nav tab, suggested posts, and ads from the feed.
+
+> Instagram changes its markup often. If Reels start leaking through, the CSS selectors in `InstagramBlocker.js` are the place to update — PRs welcome.
+
+---
+
 ## What you need
 
 - A **Mac** with at least **20 GB of free space** (Xcode + iOS tools take ~18 GB)
@@ -62,10 +73,8 @@ Open the **App Store** on your Mac, search for **Xcode**, and install it.
 2. Select **"Add Files to 'SayNoToReels'..."**
 3. Navigate to the `say-no-to-reels-main` folder you downloaded
 4. Select all these files:
-   - `ContentView.swift`
    - `SayNoToReelsApp.swift`
    - `WebViewModel.swift`
-   - `WebViewRepresentable.swift`
    - `InstagramBlocker.js`
 5. Make sure **"Copy items if needed"** is checked
 6. Click **Add**
@@ -163,4 +172,10 @@ That's it — takes about 30 seconds.
 → Make sure you tapped **Trust This Computer** on your iPhone, and that Developer Mode is turned on
 
 **Build failed in Xcode**
-→ Make sure all 5 files were added in Step 4, and that your signing team is set in Step 6
+→ Make sure all 3 files were added in Step 4, and that your signing team is set in Step 6
+
+---
+
+## Disclaimer
+
+This is an unofficial, personal-use project and is not affiliated with or endorsed by Instagram or Meta. It loads Instagram's own website and hides Reels client-side; automating or modifying Instagram's web client may be against their Terms of Service. Use at your own risk. Licensed under [MIT](LICENSE).
